@@ -7,18 +7,25 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyApp.Core;
+using MyApp.Interface;
 
 namespace WebApp1.Controllers
 {
     public class ProjectController : Controller
     {
-        private WebDbContextEntities db = new WebDbContextEntities();
+        /*private WebDbContextEntities db = new WebDbContextEntities();*/
+        private readonly IProjectRepository _db;
+
+        public ProjectController(IProjectRepository db)
+        {
+            _db = db;
+        }
 
         // GET: Project
         public ActionResult Index()
         {
-            var tb_m_projects = db.tb_m_projects.Include(t => t.tb_m_vendors);
-            return View(tb_m_projects.ToList());
+            
+            return View(_db.GetAll());
         }
 
         // GET: Project/Details/5
@@ -28,7 +35,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_projects tb_m_projects = db.tb_m_projects.Find(id);
+            tb_m_projects tb_m_projects = _db.GetByGuid(id);
             if (tb_m_projects == null)
             {
                 return HttpNotFound();
@@ -39,7 +46,7 @@ namespace WebApp1.Controllers
         // GET: Project/Create
         public ActionResult Create()
         {
-            ViewBag.vendor_guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name");
+           
             return View();
         }
 
@@ -53,12 +60,13 @@ namespace WebApp1.Controllers
             if (ModelState.IsValid)
             {
                 tb_m_projects.guid = Guid.NewGuid();
-                db.tb_m_projects.Add(tb_m_projects);
-                db.SaveChanges();
+                tb_m_projects.created_date = DateTime.Now;
+                tb_m_projects.modified_date = DateTime.Now;
+                _db.Create(tb_m_projects);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.vendor_guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name", tb_m_projects.vendor_guid);
+            
             return View(tb_m_projects);
         }
 
@@ -69,12 +77,12 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_projects tb_m_projects = db.tb_m_projects.Find(id);
+            tb_m_projects tb_m_projects =_db.GetByGuid(id);
             if (tb_m_projects == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.vendor_guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name", tb_m_projects.vendor_guid);
+           
             return View(tb_m_projects);
         }
 
@@ -87,11 +95,10 @@ namespace WebApp1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_m_projects).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Update(tb_m_projects);
                 return RedirectToAction("Index");
             }
-            ViewBag.vendor_guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name", tb_m_projects.vendor_guid);
+            
             return View(tb_m_projects);
         }
 
@@ -102,7 +109,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_projects tb_m_projects = db.tb_m_projects.Find(id);
+            tb_m_projects tb_m_projects = _db.GetByGuid(id);
             if (tb_m_projects == null)
             {
                 return HttpNotFound();
@@ -115,19 +122,18 @@ namespace WebApp1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            tb_m_projects tb_m_projects = db.tb_m_projects.Find(id);
-            db.tb_m_projects.Remove(tb_m_projects);
-            db.SaveChanges();
+            tb_m_projects tb_m_projects = _db.GetByGuid(id);
+            _db.Delete(tb_m_projects.guid);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        /*protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        }*/
     }
 }

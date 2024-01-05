@@ -7,18 +7,24 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyApp.Core;
+using MyApp.Core.Dto.Accounts;
 
 namespace WebApp1.Controllers
 {
     public class AccountController : Controller
     {
-        private WebDbContextEntities db = new WebDbContextEntities();
+        /*private WebDbContextEntities db = new WebDbContextEntities();*/
+        private readonly IAccountRepository _db;
+
+        public AccountController(IAccountRepository db)
+        {
+            _db = db;
+        }
 
         // GET: Account
         public ActionResult Index()
         {
-            var tb_m_accounts = db.tb_m_accounts.Include(t => t.tb_m_companies);
-            return View(tb_m_accounts.ToList());
+            return View(_db.GetAll());
         }
 
         // GET: Account/Details/5
@@ -28,7 +34,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_accounts tb_m_accounts = db.tb_m_accounts.Find(id);
+            tb_m_accounts tb_m_accounts = _db.GetByGuid(id);
             if (tb_m_accounts == null)
             {
                 return HttpNotFound();
@@ -39,7 +45,7 @@ namespace WebApp1.Controllers
         // GET: Account/Create
         public ActionResult Create()
         {
-            ViewBag.guid = new SelectList(db.tb_m_companies, "guid", "first_name");
+           
             return View();
         }
 
@@ -53,12 +59,13 @@ namespace WebApp1.Controllers
             if (ModelState.IsValid)
             {
                 tb_m_accounts.guid = Guid.NewGuid();
-                db.tb_m_accounts.Add(tb_m_accounts);
-                db.SaveChanges();
+                tb_m_accounts.created_date = DateTime.Now;
+                tb_m_accounts.modified_date = DateTime.Now;
+                _db.Create(tb_m_accounts);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.guid = new SelectList(db.tb_m_companies, "guid", "first_name", tb_m_accounts.guid);
+            
             return View(tb_m_accounts);
         }
 
@@ -69,12 +76,12 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_accounts tb_m_accounts = db.tb_m_accounts.Find(id);
+            tb_m_accounts tb_m_accounts = _db.GetByGuid(id);
             if (tb_m_accounts == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.guid = new SelectList(db.tb_m_companies, "guid", "first_name", tb_m_accounts.guid);
+            
             return View(tb_m_accounts);
         }
 
@@ -87,11 +94,10 @@ namespace WebApp1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_m_accounts).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Update(tb_m_accounts);
                 return RedirectToAction("Index");
             }
-            ViewBag.guid = new SelectList(db.tb_m_companies, "guid", "first_name", tb_m_accounts.guid);
+           
             return View(tb_m_accounts);
         }
 
@@ -102,7 +108,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_accounts tb_m_accounts = db.tb_m_accounts.Find(id);
+            tb_m_accounts tb_m_accounts = _db.GetByGuid(id);
             if (tb_m_accounts == null)
             {
                 return HttpNotFound();
@@ -115,19 +121,41 @@ namespace WebApp1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            tb_m_accounts tb_m_accounts = db.tb_m_accounts.Find(id);
-            db.tb_m_accounts.Remove(tb_m_accounts);
-            db.SaveChanges();
+            tb_m_accounts tb_m_accounts = _db.GetByGuid(id);
+            _db.Delete(tb_m_accounts.guid);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        public ActionResult Register()
         {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
+            return View();
         }
+
+        [HttpPost]
+        public ActionResult Register(AccountDtoRegister registerDto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_db.Register(registerDto))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Registration failed. Please try again.");
+                }
+            }
+
+            return View(registerDto);
+        }
+
+        /*  protected override void Dispose(bool disposing)
+          {
+              if (disposing)
+              {
+                  db.Dispose();
+              }
+              base.Dispose(disposing);
+          }*/
     }
 }

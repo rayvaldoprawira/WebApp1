@@ -12,13 +12,19 @@ namespace WebApp1.Controllers
 {
     public class AccountRoleController : Controller
     {
-        private WebDbContextEntities db = new WebDbContextEntities();
+        /*private WebDbContextEntities db = new WebDbContextEntities();*/
+        private readonly IAccountRoleRepository _db;
+
+        public AccountRoleController(IAccountRoleRepository db)
+        {
+            _db = db;
+        }
 
         // GET: AccountRole
         public ActionResult Index()
         {
-            var tb_tr_account_roles = db.tb_tr_account_roles.Include(t => t.tb_m_accounts).Include(t => t.tb_m_roles);
-            return View(tb_tr_account_roles.ToList());
+            
+            return View(_db.GetAll());
         }
 
         // GET: AccountRole/Details/5
@@ -28,7 +34,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_tr_account_roles tb_tr_account_roles = db.tb_tr_account_roles.Find(id);
+            tb_tr_account_roles tb_tr_account_roles = _db.GetByGuid(id);
             if (tb_tr_account_roles == null)
             {
                 return HttpNotFound();
@@ -39,8 +45,7 @@ namespace WebApp1.Controllers
         // GET: AccountRole/Create
         public ActionResult Create()
         {
-            ViewBag.account_guid = new SelectList(db.tb_m_accounts, "guid", "password");
-            ViewBag.role_guid = new SelectList(db.tb_m_roles, "guid", "name");
+            
             return View();
         }
 
@@ -54,13 +59,13 @@ namespace WebApp1.Controllers
             if (ModelState.IsValid)
             {
                 tb_tr_account_roles.guid = Guid.NewGuid();
-                db.tb_tr_account_roles.Add(tb_tr_account_roles);
-                db.SaveChanges();
+                tb_tr_account_roles.created_date = DateTime.Now;
+                tb_tr_account_roles.modified_date = DateTime.Now;
+                _db.Create(tb_tr_account_roles);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.account_guid = new SelectList(db.tb_m_accounts, "guid", "password", tb_tr_account_roles.account_guid);
-            ViewBag.role_guid = new SelectList(db.tb_m_roles, "guid", "name", tb_tr_account_roles.role_guid);
+           
             return View(tb_tr_account_roles);
         }
 
@@ -71,13 +76,12 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_tr_account_roles tb_tr_account_roles = db.tb_tr_account_roles.Find(id);
+            tb_tr_account_roles tb_tr_account_roles = _db.GetByGuid(id);
             if (tb_tr_account_roles == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.account_guid = new SelectList(db.tb_m_accounts, "guid", "password", tb_tr_account_roles.account_guid);
-            ViewBag.role_guid = new SelectList(db.tb_m_roles, "guid", "name", tb_tr_account_roles.role_guid);
+           
             return View(tb_tr_account_roles);
         }
 
@@ -90,12 +94,10 @@ namespace WebApp1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_tr_account_roles).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Update(tb_tr_account_roles);
                 return RedirectToAction("Index");
             }
-            ViewBag.account_guid = new SelectList(db.tb_m_accounts, "guid", "password", tb_tr_account_roles.account_guid);
-            ViewBag.role_guid = new SelectList(db.tb_m_roles, "guid", "name", tb_tr_account_roles.role_guid);
+          
             return View(tb_tr_account_roles);
         }
 
@@ -106,7 +108,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_tr_account_roles tb_tr_account_roles = db.tb_tr_account_roles.Find(id);
+            tb_tr_account_roles tb_tr_account_roles = _db.GetByGuid(id);
             if (tb_tr_account_roles == null)
             {
                 return HttpNotFound();
@@ -119,19 +121,18 @@ namespace WebApp1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            tb_tr_account_roles tb_tr_account_roles = db.tb_tr_account_roles.Find(id);
-            db.tb_tr_account_roles.Remove(tb_tr_account_roles);
-            db.SaveChanges();
+            tb_tr_account_roles tb_tr_account_roles = _db.GetByGuid(id);
+            _db.Delete(tb_tr_account_roles.guid);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        /*protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        }*/
     }
 }

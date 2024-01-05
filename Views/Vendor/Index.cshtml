@@ -41,9 +41,9 @@
         <th>
             @Html.DisplayNameFor(model => model.modified_date)
         </th>
-        <th>
+       @* <th>
             @Html.DisplayNameFor(model => model.tb_m_account_vendors.password)
-        </th>
+        </th>*@
         <th></th>
     </tr>
 
@@ -79,9 +79,9 @@
         <td>
             @Html.DisplayFor(modelItem => item.modified_date)
         </td>
-        <td>
+        @*<td>
             @Html.DisplayFor(modelItem => item.tb_m_account_vendors.password)
-        </td>
+        </td>*@
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.guid }) |
             @Html.ActionLink("Details", "Details", new { id=item.guid }) |

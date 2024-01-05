@@ -7,18 +7,24 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using MyApp.Core;
+using MyApp.Core.Dto.AccountVendors;
 
 namespace WebApp1.Controllers
 {
     public class AccountVendorController : Controller
     {
-        private WebDbContextEntities db = new WebDbContextEntities();
+       /* private WebDbContextEntities db = new WebDbContextEntities();*/
+       private readonly IAccountVendorRepository _db;
+
+        public AccountVendorController(IAccountVendorRepository db)
+        {
+            _db = db;
+        }
 
         // GET: AccountVendor
         public ActionResult Index()
         {
-            var tb_m_account_vendors = db.tb_m_account_vendors.Include(t => t.tb_m_vendors);
-            return View(tb_m_account_vendors.ToList());
+            return View(_db.GetAll());
         }
 
         // GET: AccountVendor/Details/5
@@ -28,7 +34,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_account_vendors tb_m_account_vendors = db.tb_m_account_vendors.Find(id);
+            tb_m_account_vendors tb_m_account_vendors = _db.GetByGuid(id);
             if (tb_m_account_vendors == null)
             {
                 return HttpNotFound();
@@ -39,7 +45,7 @@ namespace WebApp1.Controllers
         // GET: AccountVendor/Create
         public ActionResult Create()
         {
-            ViewBag.guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name");
+            
             return View();
         }
 
@@ -53,12 +59,13 @@ namespace WebApp1.Controllers
             if (ModelState.IsValid)
             {
                 tb_m_account_vendors.guid = Guid.NewGuid();
-                db.tb_m_account_vendors.Add(tb_m_account_vendors);
-                db.SaveChanges();
+                tb_m_account_vendors.created_date = DateTime.Now;
+                tb_m_account_vendors.modified_date = DateTime.Now;
+                _db.Create(tb_m_account_vendors);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name", tb_m_account_vendors.guid);
+            
             return View(tb_m_account_vendors);
         }
 
@@ -69,12 +76,12 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_account_vendors tb_m_account_vendors = db.tb_m_account_vendors.Find(id);
+            tb_m_account_vendors tb_m_account_vendors = _db.GetByGuid(id);
             if (tb_m_account_vendors == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name", tb_m_account_vendors.guid);
+            
             return View(tb_m_account_vendors);
         }
 
@@ -87,11 +94,10 @@ namespace WebApp1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_m_account_vendors).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Update(tb_m_account_vendors);
                 return RedirectToAction("Index");
             }
-            ViewBag.guid = new SelectList(db.tb_m_vendors, "guid", "vendor_name", tb_m_account_vendors.guid);
+            
             return View(tb_m_account_vendors);
         }
 
@@ -102,7 +108,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_account_vendors tb_m_account_vendors = db.tb_m_account_vendors.Find(id);
+            tb_m_account_vendors tb_m_account_vendors = _db.GetByGuid(id);
             if (tb_m_account_vendors == null)
             {
                 return HttpNotFound();
@@ -115,19 +121,42 @@ namespace WebApp1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            tb_m_account_vendors tb_m_account_vendors = db.tb_m_account_vendors.Find(id);
-            db.tb_m_account_vendors.Remove(tb_m_account_vendors);
-            db.SaveChanges();
+            tb_m_account_vendors tb_m_account_vendors = _db.GetByGuid(id);
+            _db.Delete(tb_m_account_vendors.guid);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Register(AccountVendorDtoRegister registerDto)
+        {
+            if (ModelState.IsValid)
+            {
+                if (_db.Register(registerDto))
+                {
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Registration failed. Please try again.");
+                }
+            }
+
+            return View(registerDto);
+        }
+
+        /*protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        }*/
     }
 }

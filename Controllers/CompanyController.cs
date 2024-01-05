@@ -12,13 +12,19 @@ namespace WebApp1.Controllers
 {
     public class CompanyController : Controller
     {
-        private WebDbContextEntities db = new WebDbContextEntities();
+        /* private WebDbContextEntities db = new WebDbContextEntities();*/
+        private readonly ICompanyRepository _db;
+
+        public CompanyController(ICompanyRepository db)
+        {
+            _db = db;
+        }
 
         // GET: tb_m_companies
         public ActionResult Index()
         {
-            var tb_m_companies = db.tb_m_companies.Include(t => t.tb_m_accounts);
-            return View(tb_m_companies.ToList());
+            
+            return View(_db.GetAll());
         }
 
         // GET: tb_m_companies/Details/5
@@ -28,7 +34,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_companies tb_m_companies = db.tb_m_companies.Find(id);
+            tb_m_companies tb_m_companies = _db.GetByGuid(id);
             if (tb_m_companies == null)
             {
                 return HttpNotFound();
@@ -39,7 +45,7 @@ namespace WebApp1.Controllers
         // GET: tb_m_companies/Create
         public ActionResult Create()
         {
-            ViewBag.guid = new SelectList(db.tb_m_accounts, "guid", "password");
+            
             return View();
         }
 
@@ -53,12 +59,13 @@ namespace WebApp1.Controllers
             if (ModelState.IsValid)
             {
                 tb_m_companies.guid = Guid.NewGuid();
-                db.tb_m_companies.Add(tb_m_companies);
-                db.SaveChanges();
+                tb_m_companies.created_date = DateTime.Now;
+                tb_m_companies.modified_date = DateTime.Now;
+                _db.Create(tb_m_companies);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.guid = new SelectList(db.tb_m_accounts, "guid", "password", tb_m_companies.guid);
+           
             return View(tb_m_companies);
         }
 
@@ -69,12 +76,12 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_companies tb_m_companies = db.tb_m_companies.Find(id);
+            tb_m_companies tb_m_companies = _db.GetByGuid(id);
             if (tb_m_companies == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.guid = new SelectList(db.tb_m_accounts, "guid", "password", tb_m_companies.guid);
+           
             return View(tb_m_companies);
         }
 
@@ -87,11 +94,10 @@ namespace WebApp1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_m_companies).State = EntityState.Modified;
-                db.SaveChanges();
+               _db.Update(tb_m_companies);
                 return RedirectToAction("Index");
             }
-            ViewBag.guid = new SelectList(db.tb_m_accounts, "guid", "password", tb_m_companies.guid);
+           
             return View(tb_m_companies);
         }
 
@@ -102,7 +108,7 @@ namespace WebApp1.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_companies tb_m_companies = db.tb_m_companies.Find(id);
+            tb_m_companies tb_m_companies = _db.GetByGuid(id);
             if (tb_m_companies == null)
             {
                 return HttpNotFound();
@@ -115,19 +121,18 @@ namespace WebApp1.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            tb_m_companies tb_m_companies = db.tb_m_companies.Find(id);
-            db.tb_m_companies.Remove(tb_m_companies);
-            db.SaveChanges();
+            tb_m_companies tb_m_companies = _db.GetByGuid(id);
+            _db.Delete(tb_m_companies.guid);
             return RedirectToAction("Index");
         }
 
-        protected override void Dispose(bool disposing)
+        /*protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        }*/
     }
 }

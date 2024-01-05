@@ -12,23 +12,28 @@ namespace WebApp1.Controllers
 {
     public class VendorController : Controller
     {
-        private WebDbContextEntities db = new WebDbContextEntities();
+        /* private WebDbContextEntities db = new WebDbContextEntities();*/
+        private readonly IVendorRepository _db;
 
-        // GET: tb_m_vendors
-        public ActionResult Index()
+        public VendorController(IVendorRepository db)
         {
-            var tb_m_vendors = db.tb_m_vendors.Include(t => t.tb_m_account_vendors);
-            return View(tb_m_vendors.ToList());
+            _db = db;
         }
 
-        // GET: tb_m_vendors/Details/5
+        // GET: Vendor
+        public ActionResult Index()
+        {
+            return View(_db.GetAll());
+        }
+
+        // GET: Vendor/Details/5
         public ActionResult Details(Guid? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_vendors tb_m_vendors = db.tb_m_vendors.Find(id);
+            tb_m_vendors tb_m_vendors = _db.GetByGuid(id);
             if (tb_m_vendors == null)
             {
                 return HttpNotFound();
@@ -36,14 +41,14 @@ namespace WebApp1.Controllers
             return View(tb_m_vendors);
         }
 
-        // GET: tb_m_vendors/Create
+        // GET: Vendor/Create
         public ActionResult Create()
         {
-            ViewBag.guid = new SelectList(db.tb_m_account_vendors, "guid", "password");
+            
             return View();
         }
 
-        // POST: tb_m_vendors/Create
+        // POST: Vendor/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -53,32 +58,32 @@ namespace WebApp1.Controllers
             if (ModelState.IsValid)
             {
                 tb_m_vendors.guid = Guid.NewGuid();
-                db.tb_m_vendors.Add(tb_m_vendors);
-                db.SaveChanges();
+                tb_m_vendors.created_date = DateTime.Now;
+                tb_m_vendors.modified_date = DateTime.Now;
+                _db.Create(tb_m_vendors);
                 return RedirectToAction("Index");
             }
 
-            ViewBag.guid = new SelectList(db.tb_m_account_vendors, "guid", "password", tb_m_vendors.guid);
+         
             return View(tb_m_vendors);
         }
 
-        // GET: tb_m_vendors/Edit/5
+        // GET: Vendor/Edit/5
         public ActionResult Edit(Guid? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_vendors tb_m_vendors = db.tb_m_vendors.Find(id);
+            tb_m_vendors tb_m_vendors = _db.GetByGuid(id);
             if (tb_m_vendors == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.guid = new SelectList(db.tb_m_account_vendors, "guid", "password", tb_m_vendors.guid);
             return View(tb_m_vendors);
         }
 
-        // POST: tb_m_vendors/Edit/5
+        // POST: Vendor/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -87,22 +92,21 @@ namespace WebApp1.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(tb_m_vendors).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Update(tb_m_vendors);
                 return RedirectToAction("Index");
             }
-            ViewBag.guid = new SelectList(db.tb_m_account_vendors, "guid", "password", tb_m_vendors.guid);
+          
             return View(tb_m_vendors);
         }
 
-        // GET: tb_m_vendors/Delete/5
+        // GET: Vendor/Delete/5
         public ActionResult Delete(Guid? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            tb_m_vendors tb_m_vendors = db.tb_m_vendors.Find(id);
+            tb_m_vendors tb_m_vendors = _db.GetByGuid(id);
             if (tb_m_vendors == null)
             {
                 return HttpNotFound();
@@ -110,17 +114,16 @@ namespace WebApp1.Controllers
             return View(tb_m_vendors);
         }
 
-        // POST: tb_m_vendors/Delete/5
+        // POST: Vendor/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(Guid id)
         {
-            tb_m_vendors tb_m_vendors = db.tb_m_vendors.Find(id);
-            db.tb_m_vendors.Remove(tb_m_vendors);
-            db.SaveChanges();
+            tb_m_vendors tb_m_vendors = _db.GetByGuid(id);
+            _db.Delete(tb_m_vendors.guid);
             return RedirectToAction("Index");
         }
-
+/*
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -128,6 +131,6 @@ namespace WebApp1.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
-        }
+        }*/
     }
 }

@@ -234,11 +234,6 @@
     <Content Include="Views\Project\Details.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Project\Index.cshtml" />
-    <Content Include="Views\Account\Create.cshtml" />
-    <Content Include="Views\Account\Delete.cshtml" />
-    <Content Include="Views\Account\Details.cshtml" />
-    <Content Include="Views\Account\Edit.cshtml" />
-    <Content Include="Views\Account\Index.cshtml" />
     <Content Include="Views\AccountVendor\Create.cshtml" />
     <Content Include="Views\AccountVendor\Delete.cshtml" />
     <Content Include="Views\AccountVendor\Details.cshtml" />
@@ -249,16 +244,18 @@
     <Content Include="Views\AccountRole\Details.cshtml" />
     <Content Include="Views\AccountRole\Edit.cshtml" />
     <Content Include="Views\AccountRole\Index.cshtml" />
-    <Content Include="Views\tb_m_companies\Create.cshtml" />
-    <Content Include="Views\tb_m_companies\Delete.cshtml" />
-    <Content Include="Views\tb_m_companies\Details.cshtml" />
-    <Content Include="Views\tb_m_companies\Edit.cshtml" />
-    <Content Include="Views\tb_m_companies\Index.cshtml" />
-    <Content Include="Views\tb_m_vendors\Create.cshtml" />
-    <Content Include="Views\tb_m_vendors\Delete.cshtml" />
-    <Content Include="Views\tb_m_vendors\Details.cshtml" />
-    <Content Include="Views\tb_m_vendors\Edit.cshtml" />
-    <Content Include="Views\tb_m_vendors\Index.cshtml" />
+    <Content Include="Views\Vendor\Create.cshtml" />
+    <Content Include="Views\Vendor\Delete.cshtml" />
+    <Content Include="Views\Vendor\Details.cshtml" />
+    <Content Include="Views\Vendor\Edit.cshtml" />
+    <Content Include="Views\Vendor\Index.cshtml" />
+    <Content Include="Views\Account\Create.cshtml" />
+    <Content Include="Views\Account\Delete.cshtml" />
+    <Content Include="Views\Account\Details.cshtml" />
+    <Content Include="Views\Account\Edit.cshtml" />
+    <Content Include="Views\Account\Index.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\AccountVendor\Register.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

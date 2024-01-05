@@ -19,6 +19,12 @@ namespace WebApp1.App_Start
 
             // Registrasi layanan di sini
             container.RegisterType<IRoleRepository, RoleRepository>();
+            container.RegisterType<IVendorRepository, VendorRepository>();
+            container.RegisterType<IAccountRepository, AccountRepository>();
+            container.RegisterType<IAccountVendorRepository, AccountVendorRepository>();
+            container.RegisterType<IAccountRoleRepository, AccountRoleRepository>();
+            container.RegisterType<IProjectRepository, ProjectRepository>();
+            container.RegisterType<ICompanyRepository, CompanyRepository>();
         /*    container.RegisterType<RoleService>();*/
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(container));
