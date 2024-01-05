@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApp1", "WebApp1.csproj", "{E851B24E-2704-4805-B6BE-F5E15025E974}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Core", "..\MyApp.Core\MyApp.Core.csproj", "{E384E2B8-7094-4F3A-816D-3123002D3F30}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyApp.Interface", "..\MyApp.Interface\MyApp.Interface.csproj", "{FEA16BA2-BF0B-4DE9-B5EA-B2DEAB938BBE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E851B24E-2704-4805-B6BE-F5E15025E974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E851B24E-2704-4805-B6BE-F5E15025E974}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E851B24E-2704-4805-B6BE-F5E15025E974}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E851B24E-2704-4805-B6BE-F5E15025E974}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E384E2B8-7094-4F3A-816D-3123002D3F30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E384E2B8-7094-4F3A-816D-3123002D3F30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E384E2B8-7094-4F3A-816D-3123002D3F30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E384E2B8-7094-4F3A-816D-3123002D3F30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FEA16BA2-BF0B-4DE9-B5EA-B2DEAB938BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FEA16BA2-BF0B-4DE9-B5EA-B2DEAB938BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FEA16BA2-BF0B-4DE9-B5EA-B2DEAB938BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FEA16BA2-BF0B-4DE9-B5EA-B2DEAB938BBE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
+		SolutionGuid = {13A0D77E-0078-4167-B32B-5C6EFE58F170}
+	EndGlobalSection
+EndGlobal

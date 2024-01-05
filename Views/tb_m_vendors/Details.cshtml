@@ -1,0 +1,106 @@
+﻿@model MyApp.Core.tb_m_vendors
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>tb_m_vendors</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.vendor_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.vendor_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.phone_number)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.phone_number)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.photo_profile)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.photo_profile)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.sector)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.sector)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.is_admin_approve)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.is_admin_approve)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.is_manager_approve)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.is_manager_approve)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.created_date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.created_date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.modified_date)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.modified_date)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.tb_m_account_vendors.password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.tb_m_account_vendors.password)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.guid }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

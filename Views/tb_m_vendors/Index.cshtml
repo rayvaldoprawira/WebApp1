@@ -1,0 +1,93 @@
+﻿@model IEnumerable<MyApp.Core.tb_m_vendors>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.vendor_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.phone_number)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.photo_profile)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.sector)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.is_admin_approve)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.is_manager_approve)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.created_date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.modified_date)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.tb_m_account_vendors.password)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.vendor_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.email)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.phone_number)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.photo_profile)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.sector)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.is_admin_approve)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.is_manager_approve)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.created_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.modified_date)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.tb_m_account_vendors.password)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.guid }) |
+            @Html.ActionLink("Details", "Details", new { id=item.guid }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.guid })
+        </td>
+    </tr>
+}
+
+</table>
